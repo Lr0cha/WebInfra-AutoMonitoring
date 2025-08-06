@@ -21,7 +21,7 @@ Abra o **VirtualBox** e clique em **"New"** para criar uma nova VM.
 
 <details>
     <summary><b>Virtual Box</b></summary>
-    <img src="/assets/virtual-box.png" width="700px" alt="Categorias">
+    <img src="../assets/virtual-box.png" width="700px" alt="Virtual Box">
 </details>
 
 **Configurações sugeridas:**
