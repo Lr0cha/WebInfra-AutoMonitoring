@@ -71,18 +71,12 @@ Para acessar a VM a partir do navegador do seu computador host, descubra o IP da
 ```bash
 ip -4 a # ...
 ```
-Exemplo de saída:
-
-```bash
-2: enp0s3: <...>
-    inet 192.168.1.105/24 brd 192.168.1.255 scope global dynamic enp0s3
-```
-Neste caso o IP é **192.168.1.105**
+<details> <summary><b>IP privado</b></summary> <img src="../assets/vm-ip.png" width="700px" alt="Resposta do ip-4 a"> </details>
 
 > [!NOTE]\
-> A máquina virtual deve estar configurada em modo bridge para estar acessível via IP privado(mesma sub rede).
+> A máquina virtual deve estar configurada em modo **Bridge** para estar acessível via IP privado(mesma sub rede).
 
-Abra um navegador na sua máquina e acesse:
+Agora, abra um navegador na sua máquina e acesse:
 
 ```bash
 http://<IP_DA_VM>
@@ -94,7 +88,83 @@ Você deverá ver a página padrão do Nginx, indicando que o servidor está fun
 
 ---
 
-✅ 2. Criar uma página HTML personalizada
+### 1.5 Editando o arquivo de configuração do Nginx (caso necessário)
 
+> ⚠️ **Nota:**  
+> Caso você **consiga acessar a página normalmente** via `curl` ou navegador, **pode ignorar esta etapa**.
 
+Abra o arquivo com um editor:
 
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
+
+Substitua o conteúdo pela configuração abaixo:
+
+```nginx
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+
+    # Adicione "index.php" caso esteja utilizando PHP
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+#### 1.5.1 Reiniciar o Nginx para aplicar as mudanças
+
+```bash
+sudo systemctl restart nginx
+```
+
+---
+
+### ✅ 2. Criar uma página HTML personalizada
+
+> 💡 **Dica:**  
+> Você pode utilizar como exemplo a pasta **`/site`** disponível neste repositório.
+
+Use o comando `scp` para transferir do host (sua máquina real) para a VM:
+
+```bash
+scp -r site/ usuario@IP_DA_VM:/tmp  # Copia a pasta site para o diretório /tmp da VM
+```
+
+> 🔄 **Atenção:**  
+> Substitua `usuario` e `IP_DA_VM` pelos dados reais da sua máquina virtual.
+
+<details>
+  <summary><strong>📸 Exemplo do SCP no terminal</strong></summary>
+  <img src="../assets/nginx-scp.png" width="700px" alt="Resposta no terminal">
+</details>
+
+---
+
+Após a cópia, remova o HTML padrão e mova seus arquivos para o diretório correto:
+
+```bash
+cd /etc/nginx
+sudo rm -rf /var/www/html/*
+sudo mv /tmp/site/* /var/www/html/
+```
+
+<details>
+  <summary><strong>📸 Movendo e apagando arquivos .html</strong></summary>
+  <img src="../assets/nginx-scp.png" width="700px" alt="Resposta no terminal">
+</details>
+
+---
+
+Depois disso, o Nginx servirá o seu próprio `index.html` em vez do `index.nginx-debian.html`.
+
+<details>
+  <summary><strong>🌐 Verificando a página do Nginx via navegador</strong></summary>
+  <img src="../assets/nginx-new-browser.png" width="700px" alt="Site disponível">
+</details>
+```
