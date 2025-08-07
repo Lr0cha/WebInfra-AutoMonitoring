@@ -5,3 +5,4 @@ Este projeto implementa uma infraestrutura local simples com Nginx em uma VM Ubu
 
 # Passo a passo:
 * [Etapa 1: Configuração do Ambiente](https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-1-configuracao-do-ambiente.md)
+* [Etapa 2: Configuração do Servidor Web](https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-2-cofiguracao-do-servidor-web.md)
