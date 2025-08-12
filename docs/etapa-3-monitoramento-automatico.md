@@ -41,21 +41,18 @@ sudo apt install -y python3 python3-venv python3-pip
 
 ---
 
-### 2.2 Criar a pasta do projeto e ajustar permissões (recomendo usar o root)
+### 2.2 Criar a pasta do projeto e ajustar permissões (usarei como `root`)
 
 ```bash
-mkdir -p /opt/monitor-site
-cd /opt/monitor-site
+mkdir -p /usr/local/bin/monitor-site
+cd /usr/local/bin/monitor-site
 ```
-
-> [!IMPORTANT]\
-> Se a pasta for criada com um user do grupo `sudo`, o `owner` e `group` será o `root`, use `chown` para ficar com seu usuário antes de criar o `venv`, evitando `Permission denied`.
-> ```bash
-> sudo chown -R $USER:$USER /opt/monitor-site``
 
 ---
 
 ### 2.3 Criar e ativar o ambiente virtual (venv)
+
+Dentro da pasta:
 
 ```bash
 python3 -m venv venv
@@ -82,71 +79,66 @@ pip install python-dotenv requests # para usar .env
 
 ### 2.4 Criar o arquivo `.env`
 
-Crie `/opt/monitor-site/.env`:
+Crie `.env` dentro da pasta `/monitor-site`:
 
 ```bash
-nano /opt/monitor-site/.env
+nano /usr/local/bin/monitor-site/.env
 ```
 
 Exemplo de conteúdo (substitua pelos seus valores):
 
 ```
-SITE_URL=http://192.168.15.16
+SITE_URL=http://192.168.15.69
 WEBHOOK_URL=https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI
 ```
 
 Interessante retirar algumas permissões do `.env`:
 
 ```bash
-chmod 600 /opt/monitor-site/.env
+chmod 600 /usr/local/bin/monitor-site/.env
 ```
 
 ---
 
-### 2.5 Copiar / colar o `monitor_site.py` para a VM
+### 2.5 Copiar / colar o `monitor.py` para a VM
 
-Se você editou o script localmente na máquina ou pegou o script que deixei na pasta `\scripts`, copie para a VM:
+Se você editou o script localmente na sua máquina ou pegou o script que deixei na pasta `/scripts`, copie para a VM:
 
 ```bash
-scp \pasta usuario@IP_DA_VM:/tmp
+scp pasta/ usuario@IP_DA_VM:/tmp
 ```
 
 <details>
   <summary><b>Exemplo SCP no terminal</b></summary>
-  <img src="../assets/scp-script.png" width="700px" alt="Terminal scp script">
+  <img src="../assets/scp-script.png" width="900px" alt="Terminal scp script">
   <p><i>Figura — Copiando arquivo para a VM</i></p>
 </details>
 
 Mover o script para o diretório do projeto na VM:
 
 ```bash
-mv /tmp/monitor_site.py /opt/monitor-site/monitor_site.pyy
+mv /tmp/monitor_site.py /usr/local/bin/monitor-site/monitor.py
 ```
-
-<details>
-  <summary><b>Movendo o script</b></summary>
-  <img src="../assets/mv-script.png" width="900px" alt="Terminal mv do script">
-  <p><i>Figura — Movendo script para /opt/monitor-site</i></p>
-</details>
 
 Edite o script com `nano` se precisar:
 
 ```bash
-nano /opt/monitor-site/monitor_site.py
+nano /usr/local/bin/monitor-site/monitor_site.py
 ```
-
-<details>
-  <summary><b>Script em edição (exemplo)</b></summary>
-  <img src="../assets/monitor-nano" width="900px" alt="Script em python para monitoramento">
-  <p><i>Figura — Edição do script</i></p>
-</details>
 
 Torne executável:
 
 ```bash
-chmod +x /opt/monitor-site/monitor.py
+chmod +x /usr/local/bin/monitor-site/monitor.py
 ```
 
+As permissões devem ficar dessa maneira:
+
+<details>
+  <summary><b>Permissões pasta de monitoramento</b></summary>
+  <img src="../assets/script-permissions.png" width="900px" alt="Terminal ls -al de /monitor-site">
+  <p><i>Figura — ls da pasta de monitoramento</i></p>
+</details>
 ---
 
 ### 2.7 Criar o arquivo de log e ajustar permissões
@@ -164,10 +156,10 @@ chmod 664 /var/log/nginx-general.log
 Ative o venv e execute o script manualmente:
 
 ```bash
-cd /opt/monitor-site
+cd /usr/local/bin/monitor-site
 source venv/bin/activate
-python monitor_site.py
-# ou: /opt/monitor-site/venv/bin/python /opt/monitor-site/monitor_site.py
+python monitor.py
+
 ```
 
 > [!IMPORTANT]\
@@ -181,7 +173,7 @@ cat /var/log/nginx-general.log
 
 <details>
   <summary><b>Teste manual da venv</b></summary>
-  <img src="../assets/test-log.png" width="700px" alt="Teste manual da venv">
+  <img src="../assets/py-test.png" width="900px" alt="Teste manual da venv">
   <p><i>Figura — Exemplo de teste manual com venv</i></p>
 </details>
 
@@ -189,7 +181,7 @@ Se o site estiver caído, você verá entradas no log e receberá a notificaçã
 
 <details>
   <summary><b>Notificação de erro no Discord</b></summary>
-  <img src="../assets/disc-error-msg.png" width="700px" alt="Notificação do discord">
+  <img src="../assets/disc-error.png" width="900px" alt="Notificação do discord">
   <p><i>Figura — Exemplo de mensagem de alerta no Discord</i></p>
 </details>
 
@@ -206,35 +198,19 @@ crontab -e
 2. Adicione a linha abaixo para executar **a cada minuto** usando o Python do `venv`:
 
 ```bash
-* * * * * /opt/monitor-site/venv/bin/python /opt/monitor-site/monitor_site.py >> /var/log/nginx-general.log 2>&1
+* * * * * /usr/local/bin/monitor-site/venv/bin/python /usr/local/bin/monitor-site/monitor.py >> /var/log/nginx-general.log 2>&1
 ```
 
 **Explicação rápida:**
 - `* * * * *` → executa a cada 1 minuto.  
-- Usa `/opt/monitor-site/venv/bin/python` para garantir as bibliotecas instaladas no `venv`.  
+- Usa `/usr/local/bin/monitor-site/venv/bin/python` para garantir as bibliotecas instaladas no `venv`.  
 - Redireciona saída padrão e erros para o mesmo arquivo de log.
 
 <details>
   <summary><b>Configuração do cron</b></summary>
-  <img src="../assets/cron-job.png" width="700px" alt="Configuração do cron">
+  <img src="../assets/cronatab.png" width="900px" alt="Configuração do cron">
   <p><i>Figura — Cron configurado para rodar o script a cada minuto</i></p>
 </details>
 
 3. Salve e saia do editor (`Ctrl+O`, `Enter`, `Ctrl+X` no nano; `:wq` no vim).
 
----
-
-## ✅ 4 — Verificações e troubleshooting rápido
-
-- **`Invalid URL 'None'`** → veja se o `.env` está no caminho correto (`/opt/monitor-site/.env`) e contém `SITE_URL` com `http://` ou `https://`.
-- **Erro de permissão ao gravar log** → verifique o owner/permissions de `/var/log/nginx-general.log`.
-- **Cron não encontra requests/dotenv** → verifique se está usando o `venv` no `crontab` (veja linha acima).
-- **Testar webhook manualmente**:
-  ```bash
-  curl -H "Content-Type: application/json" -X POST -d '{"content":"teste"}' https://discord.com/api/webhooks/SEU_WEBHOOK
-  ```
-- **Ver fuso horário (timestamp está adiantado)**: ajuste o timezone do servidor (afeta o `datetime.now().astimezone()`):
-  ```bash
-  sudo timedatectl set-timezone America/Sao_Paulo
-  date
-  ```
