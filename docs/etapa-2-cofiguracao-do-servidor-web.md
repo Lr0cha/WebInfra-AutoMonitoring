@@ -168,3 +168,8 @@ Depois disso, o Nginx servirá o seu próprio `index.html` em vez do `index.ngin
   <img src="../assets/nginx-new-browser.png" width="700px" alt="Site disponível">
 </details>
 ```
+
+<div align="center">
+  <a href="https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-1-configuracao-do-ambiente.md">&lt; Voltar</a> |  
+  <a href="https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-3-monitoramento-automatico.md">Próxima Etapa &gt;</a>
+</div>

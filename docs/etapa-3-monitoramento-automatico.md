@@ -342,3 +342,7 @@ crontab -e
 </details>
 
 3. Salve e saia do editor (`Ctrl+O`, `Enter`, `Ctrl+X` no nano; `:wq` ou `:x` no vi).
+
+<div align="center">
+  <a href="https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-2-cofiguracao-do-servidor-web.md">&lt; Voltar</a>
+</div>

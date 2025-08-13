@@ -55,3 +55,11 @@ Após a instalação e reinicialização:
 
 ```bash
 sudo apt update && sudo apt upgrade -y
+```
+
+<div align="center">
+  <a href="https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/README.md">&lt; Voltar</a> |  
+  <a href="https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-2-cofiguracao-do-servidor-web.md">Próxima Etapa &gt;</a>
+</div>
+
+
