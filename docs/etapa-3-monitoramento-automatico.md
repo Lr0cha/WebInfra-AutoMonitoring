@@ -1,4 +1,4 @@
-# 🚨 Etapa 3: Monitoramento automático do site com Python e alertas via Discord
+## 🚨 Etapa 3: Monitoramento automático do site com Python e alertas via Discord
 
 Nesta etapa, será criado um script em **Python** que monitorará a disponibilidade do site (HTTP). Se o site estiver fora do ar, um alerta será enviado para um canal do **Discord** via *webhook* e as ocorrências serão registradas em `/var/log/nginx-general.log`. Em seguida vamos agendar a execução com `cron` para rodar **a cada minuto**.
 
@@ -337,12 +337,12 @@ crontab -e
 
 <details>
   <summary><b>Configuração do cron</b></summary>
-  <img src="../assets/cronatab.png" width="900px" alt="Configuração do cron">
+  <img src="../assets/crontab.png" width="900px" alt="Configuração do cron">
   <p><i>Figura — Cron configurado para rodar o script a cada minuto</i></p>
 </details>
 
 3. Salve e saia do editor (`Ctrl+O`, `Enter`, `Ctrl+X` no nano; `:wq` ou `:x` no vi).
 
 <div align="center">
-  <a href="https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-2-cofiguracao-do-servidor-web.md">&lt; Voltar</a>
+  <a href="https://github.com/Lr0cha/WebInfra-AutoMonitoring/blob/main/docs/etapa-2-cofiguracao-do-servidor-web.md">&lt; Voltar Etapa</a>
 </div>
