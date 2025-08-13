@@ -4,6 +4,7 @@ import datetime
 import pytz
 from dotenv import load_dotenv
 import subprocess
+import time
 
 # Carregar variáveis do arquivo .env
 load_dotenv(dotenv_path="/usr/local/bin/monitor-site/.env")
@@ -22,8 +23,12 @@ def send_discord_alert(message):
         log(f"Erro ao enviar alerta para o Discord: {e}")
         
 def restart_service():
-    subprocess.run(["systemctl", "restart", "nginx"], check=True)
-    send_discord_alert(f"🔄 Serviço nginx do {URL} reiniciado automaticamente com sucesso no servidor!")
+     try:
+        time.sleep(15)
+        subprocess.run(["systemctl", "restart", "nginx"], check=True)
+        send_discord_alert(f"✅ Serviço nginx do {URL} reiniciado automaticamente com sucesso no servidor!")
+     except subprocess.CalledProcessError:
+        send_discord_alert(f"⚠️ Falha ao reiniciar o serviço nginx no servidor {URL}.")
 
 def log(message):
     """Registra mensagens no log com a hora de Brasília."""
@@ -44,9 +49,9 @@ def check_site():
             log(f"Site {URL} está OK.")
         else:
             log(f"Site {URL} retornou o status code: {response.status_code}")
-    except requests.exceptions.RequestException as e: #caso fora de ar ...
+    except requests.exceptions.RequestException as e: # exception, caso fora de ar ...
         log(f"Erro ao acessar o site {URL}: {e}")
-        send_discord_alert(f"❌ Não foi possível acessar o site `{URL}` (FORA DO AR).\n")
+        send_discord_alert(f"❌ Não foi possível acessar o site {URL} (fora do ar). Tentando reiniciar automaticamente...")
         restart_service()
         
 if __name__ == "__main__":
